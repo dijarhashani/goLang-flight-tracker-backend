@@ -9,7 +9,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		origin := c.GetHeader("Origin")
 
 		allowedOrigins := map[string]bool{
-			"https://flighttracker-6jvd.onrender.com/": true,
+			"https://flighttracker-6jvd.onrender.com": true,
 		}
 
 		if allowedOrigins[origin] {
