@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flight Tracker Backend API Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #020617;
+      --bg-card-alt: #02081a;
+      --border: #1f2937;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --radius: 10px;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #1e293b, #020617 55%);
+      color: var(--text);
+      font-family: var(--font-sans);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      border-right: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.98));
+      padding: 20px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title span.icon {
+      font-size: 18px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 118, 110, 0.2);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 11px;
+      color: #a5f3fc;
+      margin-bottom: 18px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 16px 0 6px;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 7px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 3px;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+    }
+
+    .nav-link:hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      transform: translateX(1px);
+    }
+
+    .nav-link.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .main {
+      flex: 1;
+      padding: 22px 26px 40px;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .env-pill {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .env-pill code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    .search-box {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      min-width: 220px;
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 12px;
+      flex: 1;
+    }
+
+    .search-box input::placeholder {
+      color: #6b7280;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section h2 span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .section p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.06), rgba(15, 23, 42, 0.98));
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.85);
+    }
+
+    .card.alt {
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.03), rgba(2, 6, 23, 0.98));
+    }
+
+    .endpoint-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 6px;
+    }
+
+    .method {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .method.GET {
+      background: rgba(34, 197, 94, 0.13);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .method.POST {
+      background: rgba(56, 189, 248, 0.13);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+    }
+
+    .method.DELETE {
+      background: rgba(248, 113, 113, 0.13);
+      color: var(--danger);
+      border: 1px solid rgba(248, 113, 113, 0.55);
+    }
+
+    .method.PUT {
+      background: rgba(234, 179, 8, 0.13);
+      color: var(--warning);
+      border: 1px solid rgba(234, 179, 8, 0.5);
+    }
+
+    .endpoint-path {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .endpoint-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .meta span {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      color: var(--muted);
+    }
+
+    .meta span.auth {
+      border-color: rgba(56, 189, 248, 0.5);
+      color: var(--accent);
+    }
+
+    .meta span.secure {
+      border-color: rgba(22, 163, 74, 0.65);
+      color: var(--success);
+    }
+
+    .small-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+
+    pre {
+      margin: 0;
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 8px 9px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #e5e7eb;
+      max-height: 260px;
+      overflow: auto;
+      border: 1px solid #111827;
+    }
+
+    code {
+      font-family: var(--font-mono);
+    }
+
+    .kv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .kv-table th,
+    .kv-table td {
+      padding: 4px 6px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .kv-table th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .kv-table td:first-child {
+      font-family: var(--font-mono);
+      color: #e5e7eb;
+      width: 110px;
+    }
+
+    .kv-table td:nth-child(2) {
+      color: #e5e7eb;
+      width: 70px;
+    }
+
+    .kv-table td:last-child {
+      color: var(--muted);
+    }
+
+    .badge-mini {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .main {
+        padding: 18px 14px 26px;
+      }
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="logo">Airbook / Flight Tracker</div>
+    <div class="title">
+      <span class="icon">✈️</span>
+      <span>Backend API Reference</span>
+    </div>
+    <div class="subtitle">
+      Go (Gin) REST API for authentication, live flights, airport info, favorites and bookings.
+    </div>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      <span>Local environment</span>
+      <code>http://localhost:8080</code>
+    </div>
+     <div class="badge">
+      <span class="badge-dot"></span>
+      <span>Production environment</span>
+      <code>https://golang-flight-tracker-backend.onrender.com</code>
+    </div>
+
+    <div class="nav-section-title">Sections</div>
+    <a href="#overview" class="nav-link active">Overview</a>
+    <a href="#auth" class="nav-link">Authentication</a>
+    <a href="#flights" class="nav-link">Flights</a>
+    <a href="#airport" class="nav-link">Airport & Airlines</a>
+    <a href="#favorites" class="nav-link">Favorites</a>
+    <a href="#bookings" class="nav-link">Bookings</a>
+    <a href="#errors" class="nav-link">Errors & Responses</a>
+  </aside>
+
+  <main class="main">
+    <div class="top-bar">
+      <div class="env-pill">
+        Environment:
+        <strong>Local development</strong>
+        <span>|</span>
+        Base URL:
+        <code>http://localhost:8080</code>
+      </div>
+      <div class="search-box">
+        🔎
+        <input type="text" placeholder="Search (static template – no JS yet)" />
+      </div>
+    </div>
+
+    <!-- Overview -->
+    <section id="overview" class="section">
+      <h2>Overview <span class="tag">v1</span></h2>
+      <p>
+        This document describes the REST endpoints for the Go + Gin Flight Tracker backend.
+        It is written for local development using <code>http://localhost:8080</code> as the base URL.
+        Authentication uses a secure, HTTP-only, partitioned cookie named <code>token</code>.
+      </p>
+      <div class="grid" style="margin-top:14px;">
+        <div class="card">
+          <div class="small-title">Authentication flow</div>
+          <pre><code>1. POST /auth/register   → create user
+2. POST /auth/login      → verifies credentials, sets token cookie
+3. GET  /auth/me         → returns current user (requires cookie)
+4. POST /auth/logout     → clears token cookie
+
+Cookie details:
+- Name:      token
+- Type:      HTTP-only, Secure, SameSite=None, Partitioned
+- Lifetime:  24h (configurable)</code></pre>
+        </div>
+        <div class="card alt">
+          <div class="small-title">Main resource groups</div>
+          <table class="kv-table">
+            <tr>
+              <th>Group</th>
+              <th>Prefix</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>/auth</td>
+              <td>Auth</td>
+              <td>User registration, login, logout, current user.</td>
+            </tr>
+            <tr>
+              <td>/flights</td>
+              <td>Flights</td>
+              <td>Live planes from ADS-B data.</td>
+            </tr>
+            <tr>
+              <td>/airport-info</td>
+              <td>Airport</td>
+              <td>Flights per airport, arrivals/departures (AeroDataBox).</td>
+            </tr>
+            <tr>
+              <td>/favorites</td>
+              <td>Favorites</td>
+              <td>Save user favorite airports.</td>
+            </tr>
+            <tr>
+              <td>/booking</td>
+              <td>Bookings</td>
+              <td>Book flights and see/delete user bookings.</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Auth -->
+    <section id="auth" class="section">
+      <h2>Authentication <span class="tag">/auth</span></h2>
+      <p>
+        Authentication is handled using a secure cookie. All protected endpoints require the
+        <code>token</code> cookie, which is automatically sent when requests are made with
+        <code>credentials: "include"</code> from the frontend.
+      </p>
+
+      <!-- POST /auth/register -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method POST">POST</span>
+            <span class="endpoint-path">/auth/register</span>
+          </div>
+          <div class="endpoint-desc">
+            Register a new user with name, surname, email and password.
+          </div>
+          <div class="meta">
+            <span>Public</span>
+            <span class="secure">Uses HTTPS when deployed</span>
+          </div>
+
+          <div class="small-title">Request body (JSON)</div>
+          <table class="kv-table">
+            <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+            <tr><td>name</td><td>string</td><td>User's first name</td></tr>
+            <tr><td>surname</td><td>string</td><td>User's last name</td></tr>
+            <tr><td>email</td><td>string</td><td>Unique email address</td></tr>
+            <tr><td>password</td><td>string</td><td>Plain-text password (hashed on server)</td></tr>
+          </table>
+
+          <div class="small-title" style="margin-top:6px;">Example</div>
+          <pre><code>POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john@example.com",
+  "password": "secret123"
+}</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Response examples</div>
+          <pre><code>201 Created
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "John",
+  "surname": "Doe",
+  "email": "john@example.com"
+}</code></pre>
+
+          <div class="small-title" style="margin-top:8px;">Error</div>
+          <pre><code>400 Bad Request
+{
+  "error": "Email already registered"
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- POST /auth/login -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method POST">POST</span>
+            <span class="endpoint-path">/auth/login</span>
+          </div>
+          <div class="endpoint-desc">
+            Log in an existing user and set the <code>token</code> cookie.
+          </div>
+          <div class="meta">
+            <span>Public</span>
+            <span class="auth">Sets auth cookie</span>
+            <span class="secure">Cookie: HttpOnly, Secure, SameSite=None, Partitioned</span>
+          </div>
+
+          <div class="small-title">Request body (JSON)</div>
+          <table class="kv-table">
+            <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+            <tr><td>email</td><td>string</td><td>User email</td></tr>
+            <tr><td>password</td><td>string</td><td>User password</td></tr>
+          </table>
+
+          <div class="small-title" style="margin-top:6px;">Example (fetch)</div>
+          <pre><code>fetch("http://localhost:8080/auth/login", {
+  method: "POST",
+  credentials: "include",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    email: "john@example.com",
+    password: "secret123"
+  })
+});</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Success response</div>
+          <pre><code>200 OK
+Set-Cookie: token=&lt;JWT&gt;; Path=/; HttpOnly; Secure; SameSite=None; Partitioned
+
+{
+  "message": "Logged in"
+}</code></pre>
+
+          <div class="small-title" style="margin-top:8px;">Error</div>
+          <pre><code>401 Unauthorized
+{
+  "error": "Invalid credentials"
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- GET /auth/me -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/auth/me</span>
+          </div>
+          <div class="endpoint-desc">
+            Return the currently authenticated user based on the <code>token</code> cookie.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+            <span class="secure">Protected by JWT middleware</span>
+          </div>
+
+          <div class="small-title">Example (fetch)</div>
+          <pre><code>fetch("http://localhost:8080/auth/me", {
+  method: "GET",
+  credentials: "include"
+})
+  .then(res => res.json())
+  .then(console.log);</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Response</div>
+          <pre><code>200 OK
+{
+  "id": 1,
+  "name": "John",
+  "surname": "Doe",
+  "email": "john@example.com"
+}</code></pre>
+
+          <div class="small-title" style="margin-top:8px;">Unauthorized</div>
+          <pre><code>401 Unauthorized
+{
+  "error": "Unauthorized"
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- POST /auth/logout -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method POST">POST</span>
+            <span class="endpoint-path">/auth/logout</span>
+          </div>
+          <div class="endpoint-desc">
+            Destroy the authentication cookie and log the user out.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+          </div>
+
+          <div class="small-title">Example (fetch)</div>
+          <pre><code>fetch("http://localhost:8080/auth/logout", {
+  method: "POST",
+  credentials: "include"
+});</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Response</div>
+          <pre><code>200 OK
+{
+  "message": "Logged out"
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flights -->
+    <section id="flights" class="section">
+      <h2>Flights <span class="tag">/flights</span></h2>
+      <p>
+        These endpoints use ADS-B data to fetch random live planes and provide extra data such as plane images.
+      </p>
+
+      <!-- GET /flights -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/flights</span>
+          </div>
+          <div class="endpoint-desc">
+            Returns a selection of live planes filtered from ADS-B data.
+          </div>
+          <div class="meta">
+            <span>Public</span>
+          </div>
+
+          <div class="small-title">Example</div>
+          <pre><code>GET http://localhost:8080/flights</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Sample response (simplified)</div>
+          <pre><code>200 OK
+[
+  {
+    "hex": "4b7faa",
+    "call": "LX280",
+    "lat": 46.2044,
+    "lon": 6.1432,
+    "alt_baro": 31000,
+    "track": 120,
+    "flight": "LX280",
+    "from": "GVA",
+    "to": "LHR"
+  },
+  ...
+]</code></pre>
+        </div>
+      </div>
+
+      <!-- GET /plane-image/:hex -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/plane-image/:hex</span>
+          </div>
+          <div class="endpoint-desc">
+            Retrieve an image URL or image proxy for a given plane hex code.
+          </div>
+          <div class="meta">
+            <span>Public</span>
+          </div>
+
+          <div class="small-title">Path params</div>
+          <table class="kv-table">
+            <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+            <tr><td>hex</td><td>string</td><td>Plane hex identifier</td></tr>
+          </table>
+
+          <div class="small-title" style="margin-top:6px;">Example</div>
+          <pre><code>GET http://localhost:8080/plane-image/4b7faa</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Sample response</div>
+          <pre><code>200 OK
+{
+  "imageUrl": "https://example.com/plane/4b7faa.jpg"
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Airport & Airlines -->
+    <section id="airport" class="section">
+      <h2>Airport & Airlines <span class="tag">/airport-info, /airline</span></h2>
+      <p>
+        These endpoints use AeroDataBox and other APIs to fetch airport timetables and airline information.
+      </p>
+
+      <!-- GET /airport-info -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/airport-info</span>
+          </div>
+          <div class="endpoint-desc">
+            Get flight timetable and information for a specific airport (arrivals/departures).
+          </div>
+          <div class="meta">
+            <span>Public</span>
+          </div>
+
+          <div class="small-title">Query parameters (example)</div>
+          <table class="kv-table">
+            <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+            <tr><td>iata</td><td>string</td><td>Airport IATA code (e.g. PRN, GVA)</td></tr>
+            <tr><td>type</td><td>string</td><td><code>arrivals</code> or <code>departures</code></td></tr>
+          </table>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Example</div>
+          <pre><code>GET http://localhost:8080/airport-info?iata=GVA&amp;type=departures</code></pre>
+          <div class="small-title" style="margin-top:8px;">Response (simplified)</div>
+          <pre><code>200 OK
+[
+  {
+    "flightNumber": "LX280",
+    "airline": "Swiss",
+    "departure": "2025-01-10T09:45:00Z",
+    "terminal": "1",
+    "gate": "A12",
+    "status": "On time"
+  },
+  ...
+]</code></pre>
+        </div>
+      </div>
+
+      <!-- GET /airline/name -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/airline/name</span>
+          </div>
+          <div class="endpoint-desc">
+            Resolve an airline code or flight number to an airline name.
+          </div>
+          <div class="meta">
+            <span>Public</span>
+          </div>
+
+          <div class="small-title">Query parameters (example)</div>
+          <table class="kv-table">
+            <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+            <tr><td>code</td><td>string</td><td>IATA airline code or callsign</td></tr>
+          </table>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Example</div>
+          <pre><code>GET http://localhost:8080/airline/name?code=LX</code></pre>
+          <div class="small-title" style="margin-top:8px;">Response</div>
+          <pre><code>200 OK
+{
+  "code": "LX",
+  "name": "Swiss International Air Lines"
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- GET /search-flights -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/search-flights</span>
+          </div>
+          <div class="endpoint-desc">
+            Search for flights by origin, destination, and/or date.
+          </div>
+          <div class="meta">
+            <span>Public</span>
+          </div>
+
+          <div class="small-title">Query parameters (example)</div>
+          <table class="kv-table">
+            <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+            <tr><td>from</td><td>string</td><td>Origin IATA (e.g. GVA)</td></tr>
+            <tr><td>to</td><td>string</td><td>Destination IATA (e.g. LHR)</td></tr>
+            <tr><td>date</td><td>string</td><td>ISO date (e.g. 2025-01-10)</td></tr>
+          </table>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Example</div>
+          <pre><code>GET http://localhost:8080/search-flights?from=GVA&amp;to=LHR&amp;date=2025-01-10</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Favorites -->
+    <section id="favorites" class="section">
+      <h2>Favorites <span class="tag">/favorites</span></h2>
+      <p>
+        Authenticated user can save favorite airports and retrieve or remove them.
+      </p>
+
+      <!-- POST /favorites/add -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method POST">POST</span>
+            <span class="endpoint-path">/favorites/add</span>
+          </div>
+          <div class="endpoint-desc">
+            Add an airport to the authenticated user's favorites.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+          </div>
+
+          <div class="small-title">Request body (JSON)</div>
+          <table class="kv-table">
+            <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+            <tr><td>airport_iata</td><td>string</td><td>Airport IATA code</td></tr>
+            <tr><td>airport_name</td><td>string</td><td>Human-readable airport name</td></tr>
+          </table>
+
+          <div class="small-title" style="margin-top:6px;">Example (fetch)</div>
+          <pre><code>fetch("http://localhost:8080/favorites/add", {
+  method: "POST",
+  credentials: "include",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    airport_iata: "GVA",
+    airport_name: "Geneva Airport"
+  })
+});</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Response</div>
+          <pre><code>200 OK
+{
+  "message": "Airport added to favorites"
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- GET /favorites/my-favorites -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/favorites/my-favorites</span>
+          </div>
+          <div class="endpoint-desc">
+            Get all favorite airports of the current user.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+          </div>
+
+          <div class="small-title">Example</div>
+          <pre><code>GET http://localhost:8080/favorites/my-favorites</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Sample response</div>
+          <pre><code>200 OK
+[
+  {
+    "airportIATA": "GVA",
+    "airportName": "Geneva Airport"
+  },
+  {
+    "airportIATA": "PRN",
+    "airportName": "Pristina International Airport"
+  }
+]</code></pre>
+        </div>
+      </div>
+
+      <!-- DELETE /favorites/remove/:airport_iata -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method DELETE">DELETE</span>
+            <span class="endpoint-path">/favorites/remove/:airport_iata</span>
+          </div>
+          <div class="endpoint-desc">
+            Remove a favorite airport for the current user.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+          </div>
+
+          <div class="small-title">Path params</div>
+          <table class="kv-table">
+            <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+            <tr><td>airport_iata</td><td>string</td><td>Airport IATA code</td></tr>
+          </table>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Example</div>
+          <pre><code>DELETE http://localhost:8080/favorites/remove/GVA</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bookings -->
+    <section id="bookings" class="section">
+      <h2>Bookings <span class="tag">/booking</span></h2>
+      <p>
+        Bookings are linked to the authenticated user and store flight details such as flight ID, route,
+        seat and date.
+      </p>
+
+      <!-- POST /booking/create (adjust if your path is different) -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method POST">POST</span>
+            <span class="endpoint-path">/booking/create</span>
+          </div>
+          <div class="endpoint-desc">
+            Create a new booking for the authenticated user.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+          </div>
+
+          <div class="small-title">Request body (JSON)</div>
+          <table class="kv-table">
+            <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+            <tr><td>passenger_name</td><td>string</td><td>Passenger full name</td></tr>
+            <tr><td>flight_id</td><td>string</td><td>Internal or API flight identifier</td></tr>
+            <tr><td>flight_name</td><td>string</td><td>Display name (e.g. "LX280")</td></tr>
+            <tr><td>flight_departure</td><td>string</td><td>Departure airport IATA</td></tr>
+            <tr><td>flight_arrival</td><td>string</td><td>Arrival airport IATA</td></tr>
+            <tr><td>seat_number</td><td>string</td><td>Seat number (e.g. "12A")</td></tr>
+            <tr><td>date</td><td>string</td><td>Flight date (as stored in your DB)</td></tr>
+          </table>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Example</div>
+          <pre><code>POST http://localhost:8080/booking/create
+Content-Type: application/json
+
+{
+  "passenger_name": "John Doe",
+  "flight_id": "LX280-2025-01-10",
+  "flight_name": "LX280",
+  "flight_departure": "GVA",
+  "flight_arrival": "LHR",
+  "seat_number": "12A",
+  "date": "2025-01-10"
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- GET /booking/my-bookings -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method GET">GET</span>
+            <span class="endpoint-path">/booking/my-bookings</span>
+          </div>
+          <div class="endpoint-desc">
+            Return all bookings for the authenticated user.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+          </div>
+
+          <div class="small-title">Example</div>
+          <pre><code>GET http://localhost:8080/booking/my-bookings</code></pre>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Sample response</div>
+          <pre><code>200 OK
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "passenger_name": "John Doe",
+    "flight_id": "LX280-2025-01-10",
+    "flight_name": "LX280",
+    "flight_departure": "GVA",
+    "flight_arrival": "LHR",
+    "seat_number": "12A",
+    "date": "2025-01-10"
+  }
+]</code></pre>
+        </div>
+      </div>
+
+      <!-- DELETE /booking/delete/:id -->
+      <div class="grid">
+        <div class="card">
+          <div class="endpoint-header">
+            <span class="method DELETE">DELETE</span>
+            <span class="endpoint-path">/booking/delete/:id</span>
+          </div>
+          <div class="endpoint-desc">
+            Delete a specific booking owned by the authenticated user.
+          </div>
+          <div class="meta">
+            <span class="auth">Requires auth cookie</span>
+          </div>
+
+          <div class="small-title">Path params</div>
+          <table class="kv-table">
+            <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+            <tr><td>id</td><td>number</td><td>Booking ID</td></tr>
+          </table>
+        </div>
+
+        <div class="card alt">
+          <div class="small-title">Example</div>
+          <pre><code>DELETE http://localhost:8080/booking/delete/1</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Errors -->
+    <section id="errors" class="section">
+      <h2>Errors & Response format <span class="tag">General</span></h2>
+      <p>
+        The API generally returns JSON responses. Error responses typically use a simple
+        <code>{"error": "message"}</code> structure.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <div class="small-title">Error examples</div>
+          <pre><code>400 Bad Request
+{
+  "error": "Missing required field"
+}
+
+401 Unauthorized
+{
+  "error": "Unauthorized"
+}
+
+404 Not Found
+{
+  "error": "Resource not found"
+}
+
+500 Internal Server Error
+{
+  "error": "Internal server error"
+}</code></pre>
+        </div>
+        <div class="card alt">
+          <div class="small-title">Tips for frontend</div>
+          <pre><code>// Always include credentials when working with auth:
+fetch("http://localhost:8080/booking/my-bookings", {
+  method: "GET",
+  credentials: "include"
+});
+
+// Handle JSON errors:
+fetch("http://localhost:8080/auth/me", {
+  credentials: "include"
+})
+  .then(async res =&gt; {
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Request failed");
+    }
+    return data;
+  })
+  .catch(err =&gt; {
+    console.error("API error:", err.message);
+  });</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
