@@ -95,6 +95,17 @@ func GetMe(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	c.SetCookie("token", "", -1, "/", "", false, true)
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:        "token",
+		Value:       "",
+		Path:        "/",
+		Domain:      "golang-flight-tracker-backend.onrender.com",
+		HttpOnly:    true,
+		Secure:      true,
+		SameSite:    http.SameSiteNoneMode,
+		Partitioned: true,
+		MaxAge:      -1,
+	})
+
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out"})
 }
