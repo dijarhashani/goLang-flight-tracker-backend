@@ -63,7 +63,6 @@ func Login(c *gin.Context) {
 	token, _ := utils.GenerateToken(user.ID)
 
 	http.SetCookie(c.Writer, &http.Cookie{
-		Partitioned: true,
 		Name:        "token",
 		Value:       token,
 		Path:        "/",
@@ -72,6 +71,7 @@ func Login(c *gin.Context) {
 		Secure:      true,
 		SameSite:    http.SameSiteNoneMode,
 		MaxAge:      3600 * 24,
+		Partitioned: true,
 	})
 
 	c.JSON(http.StatusOK, gin.H{
