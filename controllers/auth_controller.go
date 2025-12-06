@@ -63,14 +63,15 @@ func Login(c *gin.Context) {
 	token, _ := utils.GenerateToken(user.ID)
 
 	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "token",
-		Value:    token,
-		Path:     "/",
-		Domain:   "golang-flight-tracker-backend.onrender.com",
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteNoneMode,
-		MaxAge:   3600 * 24,
+		Partitioned: true,
+		Name:        "token",
+		Value:       token,
+		Path:        "/",
+		Domain:      "golang-flight-tracker-backend.onrender.com",
+		HttpOnly:    true,
+		Secure:      true,
+		SameSite:    http.SameSiteNoneMode,
+		MaxAge:      3600 * 24,
 	})
 
 	c.JSON(http.StatusOK, gin.H{
