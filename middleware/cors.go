@@ -1,12 +1,15 @@
 package middleware
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.GetHeader("Origin")
+		fmt.Println("Incoming Origin:", origin)
 
 		allowedOrigins := map[string]bool{
 			"https://flighttracker-6jvd.onrender.com": true,
