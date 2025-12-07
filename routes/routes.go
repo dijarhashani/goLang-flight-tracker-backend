@@ -3,6 +3,7 @@ package routes
 import (
 	"airbook-backend/controllers"
 	"airbook-backend/middleware"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,5 +41,7 @@ func RegisterRoutes(r *gin.Engine) {
 	r.GET("/airline/name", controllers.GetAirlineName)
 
 	r.GET("/search-flights", controllers.SearchFlights)
+
+	r.StaticFS("/docs", http.Dir("./docs"))
 
 }
