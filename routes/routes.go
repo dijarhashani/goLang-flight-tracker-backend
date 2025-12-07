@@ -41,9 +41,22 @@ func RegisterRoutes(r *gin.Engine) {
 
 	r.GET("/search-flights", controllers.SearchFlights)
 
-	r.Static("/docs", "./docs")
-	r.GET("/docs", func(c *gin.Context) {
-		c.File("./docs/index.html")
+	r.NoRoute(func(c *gin.Context) {
+		path := c.Request.URL.Path
+
+		if path == "/" {
+			c.File("./docs/index.html")
+			return
+		}
+		if path == "/docs" || path == "/docs/" {
+			c.File("./docs/index.html")
+			return
+		}
+		if len(path) > 6 && path[:6] == "/docs/" {
+			filePath := "." + path
+			c.File(filePath)
+			return
+		}
 	})
 
 }
