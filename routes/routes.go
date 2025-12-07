@@ -41,7 +41,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 	r.GET("/search-flights", controllers.SearchFlights)
 
-	r.GET("/health", controllers.HelathController)
+	r.HEAD("/health", controllers.HelathController)
 
 	r.NoRoute(func(c *gin.Context) {
 		path := c.Request.URL.Path
