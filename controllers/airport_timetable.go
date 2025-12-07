@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"airbook-backend/config"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,9 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	AeroHost = "aerodatabox.p.rapidapi.com"
-	AeroKey  = "c83526ca45msheb18036b37ecbd2p16357ejsn2938be1e64c0"
+var (
+	AeroHost = config.GetEnv("AERO_HOST")
+	AeroKey  = config.GetEnv("AERO_KEY")
 )
 
 type FlightNumber struct {
